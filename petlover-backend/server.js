@@ -19,6 +19,7 @@ app.use(bodyParser.json());
 // Rutas
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/appointments', require('./routes/appointmentRoutes'));
+app.use('/api/reservations', require('./routes/reservationRoutes'));
 
 // Iniciar servidor
 const PORT = process.env.PORT || 5000;

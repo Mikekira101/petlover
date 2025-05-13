@@ -2,14 +2,15 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI, {
+        mongoose.set('strictQuery', true); // Soluciona la advertencia de Mongoose
+        const conn = await mongoose.connect(process.env.MONGO_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
-        console.log('MongoDB conectado...');
-    } catch (err) {
-        console.error('Error al conectar a MongoDB:', err.message);
-        process.exit(1); // Detener el servidor si no se puede conectar
+        console.log(`MongoDB conectado: ${conn.connection.host}`);
+    } catch (error) {
+        console.error(`Error al conectar a MongoDB: ${error.message}`);
+        process.exit(1); // Detiene la aplicación si no se puede conectar
     }
 };
 
