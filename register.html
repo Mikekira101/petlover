@@ -54,41 +54,42 @@
 
     <!-- Script para manejar el registro -->
     <script>
-        const registerForm = document.getElementById('registerForm');
+    const registerForm = document.getElementById('registerForm');
 
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+    registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-            // Obtener los valores del formulario
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const password = document.getElementById('password').value;
+        // Obtener los valores del formulario
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const password = document.getElementById('password').value;
 
-            try {
-                // Enviar los datos al backend
-                const response = await fetch('http://localhost:5000/api/auth/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ name, email, phone, password }),
-                });
+        try {
+            // Enviar los datos al backend
+            const API_URL = 'https://petlover.onrender.com/api/auth/register';
 
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, email, phone, password }),
+            });
+
+            if (response.ok) {
+                alert('Registro exitoso. Ahora puedes iniciar sesión.');
+                window.location.href = 'login.html'; // Redirigir a la página de inicio de sesión
+            } else {
                 const data = await response.json();
-
-                if (response.ok) {
-                    alert('Registro exitoso. Ahora puedes iniciar sesión.');
-                    window.location.href = 'login.html'; // Redirigir a la página de inicio de sesión
-                } else {
-                    alert(`Error: ${data.message}`);
-                }
-            } catch (error) {
-                console.error('Error al registrar:', error);
-                alert('Hubo un problema al registrar. Inténtalo de nuevo.');
+                alert(`Error: ${data.message}`);
             }
-        });
-    </script>
+        } catch (error) {
+            console.error('Error al registrar:', error);
+            alert('Hubo un problema al registrar. Inténtalo de nuevo.');
+        }
+    });
+</script>
 </body>
 
 </html>
