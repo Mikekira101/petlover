@@ -16,6 +16,9 @@ router.post('/register', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error al registrar el usuario', error: error.message });
     }
+});
+
+// Ruta para iniciar sesión
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -31,7 +34,6 @@ router.post('/login', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error al iniciar sesión', error: error.message });
     }
-});
 });
 
 module.exports = router;
