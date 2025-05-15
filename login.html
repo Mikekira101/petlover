@@ -17,7 +17,7 @@
     <div class="container d-flex justify-content-center align-items-center vh-100">
         <div class="card p-4 shadow-lg" style="width: 100%; max-width: 400px;">
             <h3 class="text-center mb-4">Iniciar Sesión</h3>
-            <form id="loginform">
+            <form id="loginForm">
                 <!-- Correo -->
                 <div class="form-group">
                     <label for="email">Correo Electrónico</label>
@@ -53,7 +53,6 @@ loginForm.addEventListener('submit', async (e) => {
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    const phone= document.getElementById('phone').value;
 
     try {
         const API_URL = 'https://petlover.onrender.com/api/auth/login';
@@ -62,7 +61,7 @@ loginForm.addEventListener('submit', async (e) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ email, password, phone }),
+            body: JSON.stringify({ email, password}),
         });
 
         if (response.ok) {
