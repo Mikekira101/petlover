@@ -175,7 +175,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-5">
                     <div class="bg-primary py-5 px-4 px-sm-5">
-                        <form class="py-5">
+                        <form class="py-5" id="reservaForm">
                             <div class="form-group">
                                 <input type="text" class="form-control border-0 p-4" placeholder="name" required="required" />
                             </div>
@@ -442,6 +442,36 @@ Somos una tienda especializada en el bienestar integral de perros, gatos y otras
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    <script>
+document.getElementById('reservaForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const name = this.querySelector('input[placeholder="name"]').value;
+    const email = this.querySelector('input[placeholder="email"]').value;
+    const date = this.querySelector('input[placeholder="date"]').value;
+    const time = this.querySelector('input[placeholder="time"]').value;
+    const service = this.querySelector('select').value;
+
+    try {
+        const response = await fetch('https://petlover.onrender.com/api/reservations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, date, time, service })
+        });
+
+        if (response.ok) {
+            alert('Reserva realizada con éxito');
+            this.reset();
+        } else {
+            const data = await response.json();
+            alert('Error: ' + data.message);
+        }
+    } catch (error) {
+        alert('Error al enviar la reserva');
+        console.error(error);
+    }
+});
+</script>
 </body>
 
 </html>
