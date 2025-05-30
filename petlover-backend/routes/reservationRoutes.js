@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Reservation = require('../models/Reservation'); // Importa el modelo de reserva
+const Reservation = require('../models/reservation'); // Importa el modelo de reserva
 
 // Ruta para crear una reserva
 router.post('/', async (req, res) => {
