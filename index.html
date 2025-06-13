@@ -498,23 +498,29 @@ document.getElementById('reservaForm').addEventListener('submit', async function
 </script>
 <script>
 // Mostrar la sección de perfil al hacer clic en el botón
-document.getElementById('btnPerfil').addEventListener('click', async function(e) {
+document.getElementById('btnPerfil').addEventListener('click', function(e) {
     e.preventDefault();
-    const perfilSection = document.getElementById('perfilSection');
-    perfilSection.style.display = 'block';
-
-    // Cargar datos del usuario
     const user = JSON.parse(localStorage.getItem('user'));
     if (!user) {
-        perfilSection.innerHTML = '<p>Debes iniciar sesión.</p>';
+        document.getElementById('perfilSection').innerHTML = '<p>Debes iniciar sesión.</p>';
+        document.getElementById('perfilSection').style.display = 'block';
         return;
     }
-    document.getElementById('perfil-info').innerText = `Nombre: ${user.name}, Email: ${user.email}`;
+    // ...cargar datos de perfil normalmente...
+    document.getElementById('perfilSection').style.display = 'block';
+
 
     // Cargar reservas
+    async function cargarReservas() {
+    const user = JSON.parse(localStorage.getItem('user'));
     const res = await fetch(`https://petlover.onrender.com/api/reservations?email=${user.email}`);
     const reservas = await res.json();
+    // ...usa reservas aquí...
+}
+
+// Llama a la función cuando lo necesites
     const reservasList = document.getElementById('reservas-list');
+    cargarReservas();
     reservasList.innerHTML = '';
     reservas.forEach(r => {
         const li = document.createElement('li');
@@ -536,8 +542,10 @@ document.getElementById('btnPerfil').addEventListener('click', async function(e)
 });
 
 // Botón para cerrar la sección de perfil
-document.getElementById('cerrarPerfil').addEventListener('click', function() {
+document.getElementById('cerrarSesion').addEventListener('click', function() {
+    localStorage.removeItem('user');
     document.getElementById('perfilSection').style.display = 'none';
+    document.getElementById('btnIniciarSesion').style.display = 'inline-block';
 });
 </script>
 <script>
@@ -552,7 +560,9 @@ document.getElementById('cerrarSesion').addEventListener('click', function() {
 </script>
 <script>
 window.addEventListener('DOMContentLoaded', function() {
-    if (localStorage.getItem('user')) {
+    const user = localStorage.getItem('user');
+    // Oculta o muestra el botón de iniciar sesión
+    if (user) {
         document.getElementById('btnIniciarSesion').style.display = 'none';
     } else {
         document.getElementById('btnIniciarSesion').style.display = 'inline-block';
