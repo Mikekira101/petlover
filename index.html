@@ -34,7 +34,7 @@
                 </div>
             <!-- inicio de sesion -->
             <div class="d-inline-flex align-items-center ml-3">
-                <a href="login.html" class="btn btn-sm btn-primary">Iniciar Sesión</a>
+                <a href="login.html" id="btnIniciarSesion" style="display:none;">Iniciar sesión</a>
             </div>
             </div>
             <div class="col-lg-6 text-center text-lg-right">
@@ -137,15 +137,18 @@
     <h3>Mi Membresía</h3>
     <div id="membresia-info"></div>
     <h3>Editar Perfil</h3>
+</div>
     <form id="editarPerfilForm">
         <input type="text" id="editName" placeholder="Nombre">
         <input type="email" id="editEmail" placeholder="Correo">
         <button type="submit">Guardar Cambios</button>
     </form>
-    <button id="cerrarPerfil">Cerrar</button>
+</div>
+<div id="perfilSection" style="display:none;">
+    <!-- ...otros elementos... -->
+    <button id="cerrarSesion">Cerrar sesión</button>
 </div>
 
-<!-- ...luego tus scripts y finalmente... -->
 </body>
 </html>
 
@@ -536,6 +539,25 @@ document.getElementById('btnPerfil').addEventListener('click', async function(e)
 // Botón para cerrar la sección de perfil
 document.getElementById('cerrarPerfil').addEventListener('click', function() {
     document.getElementById('perfilSection').style.display = 'none';
+});
+</script>
+<script>
+document.getElementById('cerrarSesion').addEventListener('click', function() {
+    // Elimina los datos del usuario
+    localStorage.removeItem('user');
+    // Oculta la sección de perfil
+    document.getElementById('perfilSection').style.display = 'none';
+    // Muestra el botón de iniciar sesión
+    document.getElementById('btnIniciarSesion').style.display = 'inline-block';
+});
+</script>
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+    if (localStorage.getItem('user')) {
+        document.getElementById('btnIniciarSesion').style.display = 'none';
+    } else {
+        document.getElementById('btnIniciarSesion').style.display = 'inline-block';
+    }
 });
 </script>
 </body>
