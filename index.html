@@ -34,7 +34,8 @@
                 </div>
             <!-- inicio de sesion -->
             <div class="d-inline-flex align-items-center ml-3">
-                <a href="login.html" id="btnIniciarSesion" style="display:none;">Iniciar sesión</a>
+                <a href="login.html" id="btnIniciarSesion" class="nav-item nav-link">Iniciar sesión</a>
+                <a href="#" id="btnPerfil" class="nav-item nav-link">Mi Perfil</a>
             </div>
             </div>
             <div class="col-lg-6 text-center text-lg-right">
@@ -129,7 +130,7 @@
 <!-- ...tu contenido principal... -->
 
 <!-- Sección oculta para el perfil -->
-<div id="perfilSection" style="display:none; background:#fff; padding:2rem; border-radius:10px;">
+<div id="perfilSection" style="display:none; background:#fff; padding:2rem; border-radius:10px; position:fixed; top:10%; left:50%; transform:translateX(-50%); z-index:999;">
     <h2>Mi Perfil</h2>
     <div id="perfil-info"></div>
     <h3>Mis Reservas</h3>
@@ -466,6 +467,8 @@ Somos una tienda especializada en el bienestar integral de perros, gatos y otras
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+
+
     <script>
 document.getElementById('reservaForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -497,7 +500,16 @@ document.getElementById('reservaForm').addEventListener('submit', async function
 });
 </script>
 <script>
-document.getElementById('btnPerfil').addEventListener('click', function(e) {
+// Mostrar/ocultar botones según sesión
+function actualizarBotonesSesion() {
+    const user = localStorage.getItem('user');
+    document.getElementById('btnIniciarSesion').style.display = user ? 'none' : 'inline-block';
+    document.getElementById('btnPerfil').style.display = user ? 'inline-block' : 'none';
+}
+actualizarBotonesSesion();
+
+// Mostrar perfil
+document.getElementById('btnPerfil').addEventListener('click', async function(e) {
     e.preventDefault();
     const userStr = localStorage.getItem('user');
     let user = null;
@@ -506,28 +518,48 @@ document.getElementById('btnPerfil').addEventListener('click', function(e) {
     } catch (e) {
         user = null;
     }
-    if (!user) {
-        document.getElementById('perfilSection').innerHTML = '<p>Debes iniciar sesión.</p>';
-        document.getElementById('perfilSection').style.display = 'block';
+    const perfilSection = document.getElementById('perfilSection');
+    if (!user || !user.email) {
+        perfilSection.innerHTML = '<p>Debes iniciar sesión.</p>';
+        perfilSection.style.display = 'block';
         return;
     }
-    // Aquí muestra los datos del usuario y reservas
-    document.getElementById('perfilSection').innerHTML = `
+    // Cargar reservas del usuario
+    let reservasHtml = '<li>No hay reservas</li>';
+    try {
+        const res = await fetch(`https://petlover.onrender.com/api/reservations?email=${user.email}`);
+        const reservas = await res.json();
+        if (reservas.length > 0) {
+            reservasHtml = reservas.map(r => `<li>Servicio: ${r.service}, Fecha: ${r.date}, Hora: ${r.time}</li>`).join('');
+        }
+    } catch (err) {
+        reservasHtml = '<li>Error al cargar reservas</li>';
+    }
+    perfilSection.innerHTML = `
         <h2>Mi Perfil</h2>
-        <p>Nombre: ${user.name}</p>
+        <p>Nombre: ${user.name || ''}</p>
         <p>Email: ${user.email}</p>
-        <!-- Más contenido aquí -->
+        <h3>Mis Reservas</h3>
+        <ul>${reservasHtml}</ul>
         <button id="cerrarSesion">Cerrar sesión</button>
+        <button id="cerrarPerfil">Cerrar</button>
     `;
-    document.getElementById('perfilSection').style.display = 'block';
+    perfilSection.style.display = 'block';
 
     // Botón cerrar sesión
     document.getElementById('cerrarSesion').onclick = function() {
         localStorage.removeItem('user');
-        document.getElementById('perfilSection').style.display = 'none';
-        document.getElementById('btnIniciarSesion').style.display = 'inline-block';
+        perfilSection.style.display = 'none';
+        actualizarBotonesSesion();
+    };
+    // Botón cerrar perfil
+    document.getElementById('cerrarPerfil').onclick = function() {
+        perfilSection.style.display = 'none';
     };
 });
+
+// Al cargar la página, actualiza los botones
+window.addEventListener('DOMContentLoaded', actualizarBotonesSesion);
 </script>
 </body>
 

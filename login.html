@@ -65,9 +65,10 @@ loginForm.addEventListener('submit', async (e) => {
         });
 
         if (response.ok) {
+            // Guarda el usuario en localStorage
+            localStorage.setItem('user', JSON.stringify(data.user));
             alert('Inicio de sesión exitoso');
-            // Redirige a la página principal o dashboard
-            window.location.href = 'index.html';
+            window.location.href = 'index.html'; // Redirige a la página principal
         } else {
             const data = await response.json();
             alert(`Error: ${data.message}`);
