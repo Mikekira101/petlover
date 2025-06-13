@@ -497,76 +497,36 @@ document.getElementById('reservaForm').addEventListener('submit', async function
 });
 </script>
 <script>
-// Mostrar la sección de perfil al hacer clic en el botón
 document.getElementById('btnPerfil').addEventListener('click', function(e) {
     e.preventDefault();
-    const user = JSON.parse(localStorage.getItem('user'));
+    const userStr = localStorage.getItem('user');
+    let user = null;
+    try {
+        user = JSON.parse(userStr);
+    } catch (e) {
+        user = null;
+    }
     if (!user) {
         document.getElementById('perfilSection').innerHTML = '<p>Debes iniciar sesión.</p>';
         document.getElementById('perfilSection').style.display = 'block';
         return;
     }
-    // ...cargar datos de perfil normalmente...
+    // Aquí muestra los datos del usuario y reservas
+    document.getElementById('perfilSection').innerHTML = `
+        <h2>Mi Perfil</h2>
+        <p>Nombre: ${user.name}</p>
+        <p>Email: ${user.email}</p>
+        <!-- Más contenido aquí -->
+        <button id="cerrarSesion">Cerrar sesión</button>
+    `;
     document.getElementById('perfilSection').style.display = 'block';
 
-
-    // Cargar reservas
-    async function cargarReservas() {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const res = await fetch(`https://petlover.onrender.com/api/reservations?email=${user.email}`);
-    const reservas = await res.json();
-    // ...usa reservas aquí...
-}
-
-// Llama a la función cuando lo necesites
-    const reservasList = document.getElementById('reservas-list');
-    cargarReservas();
-    reservasList.innerHTML = '';
-    reservas.forEach(r => {
-        const li = document.createElement('li');
-        li.innerText = `Servicio: ${r.service}, Fecha: ${r.date}, Hora: ${r.time}`;
-        reservasList.appendChild(li);
-    });
-
-    // Membresía
-    document.getElementById('membresia-info').innerText = user.membership || 'Sin membresía';
-
-    // Editar perfil
-    const form = document.getElementById('editarPerfilForm');
-    form.editName.value = user.name;
-    form.editEmail.value = user.email;
-    form.onsubmit = function(ev) {
-        ev.preventDefault();
-        alert('Funcionalidad de edición pendiente de implementar');
-    };
-});
-
-// Botón para cerrar la sección de perfil
-document.getElementById('cerrarSesion').addEventListener('click', function() {
-    localStorage.removeItem('user');
-    document.getElementById('perfilSection').style.display = 'none';
-    document.getElementById('btnIniciarSesion').style.display = 'inline-block';
-});
-</script>
-<script>
-document.getElementById('cerrarSesion').addEventListener('click', function() {
-    // Elimina los datos del usuario
-    localStorage.removeItem('user');
-    // Oculta la sección de perfil
-    document.getElementById('perfilSection').style.display = 'none';
-    // Muestra el botón de iniciar sesión
-    document.getElementById('btnIniciarSesion').style.display = 'inline-block';
-});
-</script>
-<script>
-window.addEventListener('DOMContentLoaded', function() {
-    const user = localStorage.getItem('user');
-    // Oculta o muestra el botón de iniciar sesión
-    if (user) {
-        document.getElementById('btnIniciarSesion').style.display = 'none';
-    } else {
+    // Botón cerrar sesión
+    document.getElementById('cerrarSesion').onclick = function() {
+        localStorage.removeItem('user');
+        document.getElementById('perfilSection').style.display = 'none';
         document.getElementById('btnIniciarSesion').style.display = 'inline-block';
-    }
+    };
 });
 </script>
 </body>
