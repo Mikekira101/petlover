@@ -61,16 +61,16 @@ loginForm.addEventListener('submit', async (e) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ email, password}),
+            body: JSON.stringify({ email, password }),
         });
 
+        const data = await response.json(); // <-- ¡IMPORTANTE!
+
         if (response.ok) {
-            // Guarda el usuario en localStorage
             localStorage.setItem('user', JSON.stringify(data.user));
             alert('Inicio de sesión exitoso');
-            window.location.href = 'index.html'; // Redirige a la página principal
+            window.location.href = 'index.html';
         } else {
-            const data = await response.json();
             alert(`Error: ${data.message}`);
         }
     } catch (error) {
