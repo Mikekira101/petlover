@@ -119,13 +119,35 @@
                     <a href="price.html" class="nav-item nav-link">Precios</a>
                     <a href="reserva.html" class="nav-item nav-link">Reservas</a>
                     <a href="contact.html" class="nav-item nav-link">Contacto</a>
+                    <a href="#" id="btnPerfil" class="nav-item nav-link">Mi Perfil</a>
                 </div>
                 <a href="" class="btn btn-lg btn-primary px-3 d-none d-lg-block">cotizacion</a>
             </div>
         </nav>
     </div>
     <!-- Navbar End -->
+<!-- ...tu contenido principal... -->
 
+<!-- Sección oculta para el perfil -->
+<div id="perfilSection" style="display:none; background:#fff; padding:2rem; border-radius:10px;">
+    <h2>Mi Perfil</h2>
+    <div id="perfil-info"></div>
+    <h3>Mis Reservas</h3>
+    <ul id="reservas-list"></ul>
+    <h3>Mi Membresía</h3>
+    <div id="membresia-info"></div>
+    <h3>Editar Perfil</h3>
+    <form id="editarPerfilForm">
+        <input type="text" id="editName" placeholder="Nombre">
+        <input type="email" id="editEmail" placeholder="Correo">
+        <button type="submit">Guardar Cambios</button>
+    </form>
+    <button id="cerrarPerfil">Cerrar</button>
+</div>
+
+<!-- ...luego tus scripts y finalmente... -->
+</body>
+</html>
 
     <!-- Carousel Start -->
     <div class="container-fluid p-0">
@@ -470,6 +492,50 @@ document.getElementById('reservaForm').addEventListener('submit', async function
         alert('Error al enviar la reserva');
         console.error(error);
     }
+});
+</script>
+<script>
+// Mostrar la sección de perfil al hacer clic en el botón
+document.getElementById('btnPerfil').addEventListener('click', async function(e) {
+    e.preventDefault();
+    const perfilSection = document.getElementById('perfilSection');
+    perfilSection.style.display = 'block';
+
+    // Cargar datos del usuario
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+        perfilSection.innerHTML = '<p>Debes iniciar sesión.</p>';
+        return;
+    }
+    document.getElementById('perfil-info').innerText = `Nombre: ${user.name}, Email: ${user.email}`;
+
+    // Cargar reservas
+    const res = await fetch(`https://petlover.onrender.com/api/reservations?email=${user.email}`);
+    const reservas = await res.json();
+    const reservasList = document.getElementById('reservas-list');
+    reservasList.innerHTML = '';
+    reservas.forEach(r => {
+        const li = document.createElement('li');
+        li.innerText = `Servicio: ${r.service}, Fecha: ${r.date}, Hora: ${r.time}`;
+        reservasList.appendChild(li);
+    });
+
+    // Membresía
+    document.getElementById('membresia-info').innerText = user.membership || 'Sin membresía';
+
+    // Editar perfil
+    const form = document.getElementById('editarPerfilForm');
+    form.editName.value = user.name;
+    form.editEmail.value = user.email;
+    form.onsubmit = function(ev) {
+        ev.preventDefault();
+        alert('Funcionalidad de edición pendiente de implementar');
+    };
+});
+
+// Botón para cerrar la sección de perfil
+document.getElementById('cerrarPerfil').addEventListener('click', function() {
+    document.getElementById('perfilSection').style.display = 'none';
 });
 </script>
 </body>
